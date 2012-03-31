@@ -1,0 +1,42 @@
+
+as3 code/.DS_Store
+
+as3 code/UDPSocket/.actionScriptProperties
+
+as3 code/UDPSocket/.flexLibProperties
+
+as3 code/UDPSocket/.project
+
+as3 code/UDPSocket/.settings/*
+
+as3 code/UDPSocket/assets/*
+
+as3 code/UDPSocket/bin/cert/debugCert.p12
+
+demo/.DS_Store
+
+demo/UDPClient/.DS_Store
+
+demo/UDPClient/.actionScriptProperties
+
+demo/UDPClient/.flexProperties
+
+demo/UDPClient/.project
+
+demo/UDPClient/.settings/org.eclipse.core.resources.prefs
+
+demo/UDPServer/.DS_Store
+
+demo/UDPServer/.actionScriptProperties
+
+demo/UDPServer/.flexProperties
+
+demo/UDPServer/.project
+
+demo/UDPServer/.settings/org.eclipse.core.resources.prefs
+
+native android code/.DS_Store
+
+native ios code/UDPSocketiOSLibrary/.DS_Store
+
+native ios code/UDPSocketiOSLibrary/UDPSocketiOSLibrary/.DS_Store
