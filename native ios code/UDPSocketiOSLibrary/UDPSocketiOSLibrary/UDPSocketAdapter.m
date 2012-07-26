@@ -19,8 +19,15 @@
         
         theReceiveQueue = [[NSMutableArray alloc] initWithCapacity:5];
         
+        NSError *error = nil;
+        
         listenSocket = [[AsyncUdpSocket alloc] initWithDelegate:self];
+        [listenSocket enableBroadcast:YES error:&error];
+        
         sendSocket = [[AsyncUdpSocket alloc] initIPv4];
+        [sendSocket enableBroadcast:YES error:&error];
+        
+        _address = nil;
     }
     return self;
 }
@@ -37,14 +44,18 @@
 	[super dealloc];
 }
 
-- (BOOL)send:(NSData *)data toHost:(NSString *)host port:(int)port
+- (BOOL)send:(NSData *)data toHost:(NSString*)host port:(int)port
 {
     return [sendSocket sendData:data toHost:host port:port withTimeout:-1 tag:0];
 }
 
-- (BOOL)bind:(int)port
+- (BOOL)bind:(int)port onAddress:(NSString*)address
 {
+    if(_address != nil)
+        [_address release];
+    
     _port = port;
+    _address = [address retain];
     
     return YES;
 }
@@ -52,7 +63,7 @@
 - (BOOL)receive
 {
     NSError *error = nil;
-    if(![listenSocket bindToPort:_port error:&error])
+    if(![listenSocket bindToAddress:_address port:_port error:&error])
     {
         return NO;
     }

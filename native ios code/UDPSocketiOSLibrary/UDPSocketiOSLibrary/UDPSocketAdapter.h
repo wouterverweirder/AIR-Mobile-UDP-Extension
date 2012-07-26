@@ -12,18 +12,19 @@
 
 @interface UDPSocketAdapter : NSObject
 {
-    AsyncUdpSocket *listenSocket;
-    AsyncUdpSocket *sendSocket;
+    AsyncUdpSocket* listenSocket;
+    AsyncUdpSocket* sendSocket;
     
     FREContext _ctx;
     int _port;
+    NSString* _address;
     
-    NSMutableArray *theReceiveQueue;
+    NSMutableArray* theReceiveQueue;
 }
 - (id)initWithContext:(FREContext)ctx;
-- (BOOL)send:(NSData *)data toHost:(NSString *)host port:(int)port;
-- (BOOL)bind:(int)port;
+- (BOOL)send:(NSData*)data toHost:(NSString*)host port:(int)port;
+- (BOOL)bind:(int)port onAddress:(NSString*)address;
 - (BOOL)receive;
-- (UDPPacket *)readPacket;
+- (UDPPacket*)readPacket;
 - (BOOL)close;
 @end

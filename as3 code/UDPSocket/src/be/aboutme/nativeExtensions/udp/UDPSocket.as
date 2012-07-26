@@ -110,11 +110,11 @@ package be.aboutme.nativeExtensions.udp
 		 * Binds this socket to the specified local port.
 		 * @param port		The number of the port to bind to on the local computer.
 		 */ 
-		public function bind(port:uint):void
+		public function bind(port:uint, localAddress:String = "0.0.0.0"):void
 		{
 			if(extContext != null)
 			{
-				var success:Boolean = extContext.call("bind", port);
+				var success:Boolean = extContext.call("bind", port, localAddress);
 				if(!success)
 				{
 					//throw an error

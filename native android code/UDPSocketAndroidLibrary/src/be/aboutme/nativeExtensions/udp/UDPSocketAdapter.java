@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -34,9 +36,23 @@ public class UDPSocketAdapter {
 		close();
 	}
 	
-	public boolean bind(int port) {
+	public boolean bind(int port) { 
 		try {
 			this.receiveSocket = new DatagramSocket(port);
+			
+			this.port = receiveSocket.getLocalPort();
+			this.address = receiveSocket.getLocalAddress().getHostAddress();
+		} catch (SocketException e) {
+			log(e);
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean bind(int port, String host) {
+		try {
+			SocketAddress addr = new InetSocketAddress(host, port);
+			this.receiveSocket = new DatagramSocket(addr);
 			this.port = receiveSocket.getLocalPort();
 			this.address = receiveSocket.getLocalAddress().getHostAddress();
 		} catch (SocketException e) {

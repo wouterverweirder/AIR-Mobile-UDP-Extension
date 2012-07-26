@@ -50,7 +50,11 @@ FREObject Bind(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
     uint32_t portValue;
     FREGetObjectAsUint32(argv[0], &portValue);
     
-    BOOL success = [adapter bind:(int) portValue];
+    uint32_t addressLength;
+    const uint8_t* address;
+    FREGetObjectAsUTF8(argv[1], &addressLength, &address);
+    
+    BOOL success = [adapter bind:(int) portValue onAddress:[NSString stringWithUTF8String:(const char*) address]];
     
     FREObject result;
     FRENewObjectFromBool(success, &result);
@@ -142,40 +146,23 @@ FREObject InitNativeCode(FREContext ctx, void* funcData, uint32_t argc, FREObjec
     return NULL;
 }
 
+FRENamedFunction _Instance_methods[] = {
+    { (const uint8_t*) "initNativeCode", 0, InitNativeCode },
+    { (const uint8_t*) "send", 0, Send },
+    { (const uint8_t*) "bind", 0, Bind },
+    { (const uint8_t*) "receive", 0, Receive },
+    { (const uint8_t*) "readPacket", 0, ReadPacket },
+    { (const uint8_t*) "close", 0, Close }
+};
+
 void ContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, 
 						uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet)
 {
     
     NSLog(@"Entering ContextInitializer()");
     
-	*numFunctionsToTest = 6;
-    
-	FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * 6);
-	func[0].name = (const uint8_t*) "initNativeCode";
-	func[0].functionData = NULL;
-    func[0].function = &InitNativeCode;
-	
-	func[1].name = (const uint8_t*) "send";
-	func[1].functionData = NULL;
-	func[1].function = &Send;
-    
-    func[2].name = (const uint8_t*) "bind";
-	func[2].functionData = NULL;
-	func[2].function = &Bind;
-    
-    func[3].name = (const uint8_t*) "receive";
-	func[3].functionData = NULL;
-	func[3].function = &Receive;
-    
-    func[4].name = (const uint8_t*) "readPacket";
-	func[4].functionData = NULL;
-	func[4].function = &ReadPacket;
-    
-    func[5].name = (const uint8_t*) "close";
-	func[5].functionData = NULL;
-	func[5].function = &Close;
-		
-	*functionsToSet = func;
+    *numFunctionsToTest = sizeof( _Instance_methods ) / sizeof( FRENamedFunction );
+    *functionsToSet = _Instance_methods;
     
     adapter = [[UDPSocketAdapter alloc] initWithContext:ctx];
     
@@ -197,7 +184,7 @@ void ContextFinalizer(FREContext ctx)
 	return;
 }
 
-void ExtInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerToSet, 
+void UDPSocketiOSLibraryExtInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerToSet, 
                     FREContextFinalizer* ctxFinalizerToSet)
 {
     
@@ -211,7 +198,7 @@ void ExtInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerTo
 }
 
 
-void ExtFinalizer(void* extData) {
+void UDPSocketiOSLibraryExtFinalizer(void* extData) {
     
     NSLog(@"Entering ExtFinalizer()");
     

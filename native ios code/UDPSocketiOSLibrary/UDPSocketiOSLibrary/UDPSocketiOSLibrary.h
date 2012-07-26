@@ -22,6 +22,6 @@ void ContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx,
 
 void ContextFinalizer(FREContext ctx);
 
-void ExtInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerToSet, 
+void UDPSocketiOSLibraryExtInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerToSet, 
                     FREContextFinalizer* ctxFinalizerToSet);
-void ExtFinalizer(void* extData);
+void UDPSocketiOSLibraryExtFinalizer(void* extData);

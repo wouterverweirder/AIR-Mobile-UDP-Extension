@@ -10,6 +10,9 @@
 			
 			private var udpSocket:UDPSocket;
 			
+			[Bindable]
+			public var defaultTextMessage:String = "Hello World!";
+			
 			/**
 			 * We create an instance of the UDPSocket class (native extension),
 			 * to send and receive data over UDP.
@@ -25,22 +28,14 @@
 				udpSocket.receive();
 			}
 			
-			private function sendPort():void
-			{
-				var bytes:ByteArray = new ByteArray();
-				bytes.writeObject({command:"PORT", data: 1235});
-				udpSocket.send(bytes, ipInput.text, int(portInput.text));
-			}
-			
 			/**
 			 * Demonstration of sending text over the udp socket
 			 */ 
 			protected function sendClickHandler(event:MouseEvent):void
 			{
-				sendPort();
 				var bytes:ByteArray = new ByteArray();
 				bytes.writeUTFBytes(messageInput.text + "\n");
-				messageInput.text = "";
+				messageInput.text = defaultTextMessage;
 				udpSocket.send(bytes, ipInput.text, int(portInput.text));
 			}
 			
@@ -51,7 +46,6 @@
 			 */ 
 			protected function triggerSoundClickHandler(event:MouseEvent):void
 			{
-				sendPort();
 				var bytes:ByteArray = new ByteArray();
 				bytes.writeObject({command:"PLAY"});
 				udpSocket.send(bytes, ipInput.text, int(portInput.text));
@@ -98,10 +92,10 @@
 			<s:TextArea id="messagesArea" width="100%" height="100%" editable="false"/>
 			
 			<s:Label text="Send Message:" />
-			<s:TextInput width="100%" id="messageInput" skinClass="spark.skins.mobile.TextInputSkin" />
+			<s:TextInput width="100%" id="messageInput" text="{defaultTextMessage}" skinClass="spark.skins.mobile.TextInputSkin" />
 			<s:Label text="To IP / Port:" />
 			<s:HGroup width="100%">
-				<s:TextInput width="100%" id="ipInput" text="192.168.1.10" skinClass="spark.skins.mobile.TextInputSkin" />
+				<s:TextInput width="100%" id="ipInput" text="255.255.255.255" skinClass="spark.skins.mobile.TextInputSkin" />
 				<s:TextInput width="100" id="portInput" text="1234" skinClass="spark.skins.mobile.TextInputSkin" />
 			</s:HGroup>
 			<s:Button label="Send Message" click="sendClickHandler(event)" width="100%" />

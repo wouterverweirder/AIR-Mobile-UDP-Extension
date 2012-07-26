@@ -34,10 +34,12 @@ when it receives an amf object with command property set to "PLAY"
 			
 			protected function dataHandler(event:DatagramSocketDataEvent):void
 			{
-				//messagesArea.appendText(event.data.readUTFBytes(event.data.bytesAvailable) + "\n");
+				var dataBytes:ByteArray = new ByteArray();
+				event.data.readBytes(dataBytes);
+				//try reading an AMF object
 				try
 				{
-					var o:Object = event.data.readObject();
+					var o:Object = dataBytes.readObject();
 					switch(o.command)
 					{
 						case "PLAY":
@@ -52,9 +54,10 @@ when it receives an amf object with command property set to "PLAY"
 				}
 				catch(e:Error)
 				{
-					event.data.position = 0;
-					messagesArea.appendText(event.data.readUTFBytes(event.data.bytesAvailable));
-				}
+					dataBytes.position = 0;
+					var msg:String = dataBytes.readUTFBytes(dataBytes.bytesAvailable);
+					messagesArea.appendText(msg);
+				}				
 			}
 			
 		]]>
