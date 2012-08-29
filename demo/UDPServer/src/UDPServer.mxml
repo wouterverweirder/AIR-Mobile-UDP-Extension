@@ -35,6 +35,7 @@ when it receives an amf object with command property set to "PLAY"
 			protected function dataHandler(event:DatagramSocketDataEvent):void
 			{
 				var dataBytes:ByteArray = new ByteArray();
+				messagesArea.appendText("[" + event.srcAddress + ":" + event.srcPort + "] ");
 				event.data.readBytes(dataBytes);
 				//try reading an AMF object
 				try

@@ -12,8 +12,7 @@
 
 @interface UDPSocketAdapter : NSObject
 {
-    AsyncUdpSocket* listenSocket;
-    AsyncUdpSocket* sendSocket;
+    AsyncUdpSocket* socket;
     
     FREContext _ctx;
     int _port;

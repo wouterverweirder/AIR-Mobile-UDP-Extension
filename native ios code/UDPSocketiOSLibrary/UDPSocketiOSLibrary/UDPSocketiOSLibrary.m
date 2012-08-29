@@ -54,7 +54,12 @@ FREObject Bind(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
     const uint8_t* address;
     FREGetObjectAsUTF8(argv[1], &addressLength, &address);
     
-    BOOL success = [adapter bind:(int) portValue onAddress:[NSString stringWithUTF8String:(const char*) address]];
+    NSString* addressString = [NSString stringWithUTF8String:(const char*) address];
+    if([addressString isEqualToString:[NSString stringWithUTF8String:"0.0.0.0"]]) {
+        addressString = nil;
+    }
+    
+    BOOL success = [adapter bind:(int) portValue onAddress:addressString];
     
     FREObject result;
     FRENewObjectFromBool(success, &result);

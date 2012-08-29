@@ -21,11 +21,8 @@
         
         NSError *error = nil;
         
-        listenSocket = [[AsyncUdpSocket alloc] initWithDelegate:self];
-        [listenSocket enableBroadcast:YES error:&error];
-        
-        sendSocket = [[AsyncUdpSocket alloc] initIPv4];
-        [sendSocket enableBroadcast:YES error:&error];
+        socket = [[AsyncUdpSocket alloc] initWithDelegate:self];
+        [socket enableBroadcast:YES error:&error];
         
         _address = nil;
     }
@@ -34,11 +31,9 @@
 
 - (void)dealloc
 {
-    [listenSocket close];
-    [listenSocket release];
-    listenSocket = nil;
-    [sendSocket release];
-    sendSocket = nil;
+    [socket close];
+    [socket release];
+    socket = nil;
     [theReceiveQueue release];
     theReceiveQueue = nil;
 	[super dealloc];
@@ -46,7 +41,7 @@
 
 - (BOOL)send:(NSData *)data toHost:(NSString*)host port:(int)port
 {
-    return [sendSocket sendData:data toHost:host port:port withTimeout:-1 tag:0];
+    return [socket sendData:data toHost:host port:port withTimeout:-1 tag:0];
 }
 
 - (BOOL)bind:(int)port onAddress:(NSString*)address
@@ -63,11 +58,11 @@
 - (BOOL)receive
 {
     NSError *error = nil;
-    if(![listenSocket bindToAddress:_address port:_port error:&error])
+    if(![socket bindToAddress:_address port:_port error:&error])
     {
         return NO;
     }
-    [listenSocket receiveWithTimeout:-1 tag:0];
+    [socket receiveWithTimeout:-1 tag:0];
     return YES;
 }
 
@@ -84,7 +79,7 @@
 
 - (BOOL)close
 {
-    [listenSocket close];
+    [socket close];
     return YES;
 }
 
@@ -104,7 +99,7 @@
     //dispatch the event to the actionscript library
 	FREDispatchStatusEventAsync(_ctx, (const uint8_t *) "receive", (const uint8_t *) "");
     //listen for incoming packets
-    [listenSocket receiveWithTimeout:-1 tag:0];
+    [socket receiveWithTimeout:-1 tag:0];
     return YES;
 }
 

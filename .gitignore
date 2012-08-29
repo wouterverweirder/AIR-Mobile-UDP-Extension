@@ -17,6 +17,8 @@ demo/.DS_Store
 
 demo/UDPClient/.DS_Store
 
+demo/UDPClient/bin-debug
+
 demo/UDPClient/.actionScriptProperties
 
 demo/UDPClient/.flexProperties
@@ -26,6 +28,8 @@ demo/UDPClient/.project
 demo/UDPClient/.settings/org.eclipse.core.resources.prefs
 
 demo/UDPServer/.DS_Store
+
+demo/UDPServer/bin-debug
 
 demo/UDPServer/.actionScriptProperties
 

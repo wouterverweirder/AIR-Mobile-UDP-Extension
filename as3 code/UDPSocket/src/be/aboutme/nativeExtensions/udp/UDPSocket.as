@@ -1,7 +1,7 @@
 /**
  * UDPSocket.as
  * Wouter Verweirder
- * version 0.1.0
+ * version 1.0.1
  * 
  * The UDPSocket class enables code to send and receive
  * Universal Datagram Packets (UDP) on AIR for iOS projects.
@@ -108,12 +108,14 @@ package be.aboutme.nativeExtensions.udp
 		
 		/**
 		 * Binds this socket to the specified local port.
-		 * @param port		The number of the port to bind to on the local computer.
+		 * @param port		The number of the local port to bind to.
+		 * @param localAddress The local ip address to bind to.
 		 */ 
 		public function bind(port:uint, localAddress:String = "0.0.0.0"):void
 		{
 			if(extContext != null)
 			{
+				trace("bind called on localAddress: " + localAddress);
 				var success:Boolean = extContext.call("bind", port, localAddress);
 				if(!success)
 				{
