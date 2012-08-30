@@ -26,7 +26,7 @@ public class ReadPacket implements FREFunction {
 		adapter.log("ReadPacket called");
 		
 		FREObject result  = null;
-		DatagramPacket packet = adapter.readPacket();
+		DatagramPacket packet = adapter.readReceivedPacket();
 		adapter.log("packet: " + packet);
 		if(packet != null) {			
 			try {

@@ -60,7 +60,6 @@ public class UDPListeningThread implements Runnable {
 	public void stop() {
 		if(listening)
 		{
-			socket.close();
 			listening = false;
 		}
 	}

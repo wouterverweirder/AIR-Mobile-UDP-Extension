@@ -24,7 +24,8 @@ public class Bind implements FREFunction {
 			int port = args[0].getAsInt();
 			String address = args[1].getAsString();
 			adapter.log("port: " + port + " address: " + address);
-			success = adapter.bind(port, address);
+			if(address.equals("0.0.0.0")) success = adapter.bind(port);
+			else success = adapter.bind(port, address);
 		} catch (IllegalStateException e) {
 			adapter.log(e);
 		} catch (FRETypeMismatchException e) {

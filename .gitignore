@@ -44,3 +44,5 @@ native android code/.DS_Store
 native ios code/UDPSocketiOSLibrary/.DS_Store
 
 native ios code/UDPSocketiOSLibrary/UDPSocketiOSLibrary/.DS_Store
+
+demo/UDPServer/UDPServer.app

@@ -5,9 +5,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.channels.DatagramChannel;
+import java.util.Enumeration;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class UDPSocketAdapter {
@@ -15,21 +18,64 @@ public class UDPSocketAdapter {
 	private UDPSocketContext context;
 	private String address;
 	private int port;
-	private DatagramSocket sendSocket;
-	private DatagramSocket receiveSocket;
-	private UDPListeningThread run;
-	private Thread receiveThread;
+	private DatagramChannel channel;
+	private DatagramSocket socket;
+	
+	private UDPListeningThread udpListeningThread;
+	private Thread listenThread;
+	
+	private UDPSendingThread udpSendingThread;
+	private Thread sendingThread;
+	
 	private LinkedBlockingQueue<DatagramPacket>theReceiveQueue;
+	private LinkedBlockingQueue<DatagramPacket>theSendQueue;
 	
 	public UDPSocketAdapter(UDPSocketContext context) {
 		this.context = context;
-		log("created UDP Socket Adapter");
 		try {
-			sendSocket = new DatagramSocket();
+			channel = DatagramChannel.open();
+			socket = channel.socket();
 		} catch (SocketException e) {
+			log(e);
+		} catch (IOException e) {
 			log(e);
 		}
 		theReceiveQueue = new LinkedBlockingQueue<DatagramPacket>();
+		theSendQueue = new LinkedBlockingQueue<DatagramPacket>();
+	}
+	
+	private void startSendingThread() {
+		if(sendingThread == null) {
+			udpSendingThread = new UDPSendingThread(context, socket);
+			sendingThread = new Thread(udpSendingThread);
+			sendingThread.start();
+		}
+	}
+	
+	private void stopSendingThread() {
+		if(sendingThread != null) {
+			udpSendingThread.stop();
+			Thread t = sendingThread;
+			sendingThread = null;
+			t.interrupt();
+		}
+	}
+	
+	private void startListeningThread() {
+		if(listenThread == null) {
+			udpListeningThread = new UDPListeningThread(context, socket);
+			listenThread = new Thread(udpListeningThread);
+			listenThread.start();
+		}
+	}
+	
+	private void stopListeningThread() {
+		if(listenThread != null) {
+			udpListeningThread.stop();
+			Thread t = listenThread;
+			listenThread = null;
+			t.interrupt();
+		}
 	}
 	
 	public void dispose() {
@@ -37,24 +83,15 @@ public class UDPSocketAdapter {
 	}
 	
 	public boolean bind(int port) { 
-		try {
-			this.receiveSocket = new DatagramSocket(port);
-			
-			this.port = receiveSocket.getLocalPort();
-			this.address = receiveSocket.getLocalAddress().getHostAddress();
-		} catch (SocketException e) {
-			log(e);
-			return false;
-		}
-		return true;
+		return bind(port, getLocalIpAddress());
 	}
 	
 	public boolean bind(int port, String host) {
 		try {
 			SocketAddress addr = new InetSocketAddress(host, port);
-			this.receiveSocket = new DatagramSocket(addr);
-			this.port = receiveSocket.getLocalPort();
-			this.address = receiveSocket.getLocalAddress().getHostAddress();
+			socket.bind(addr);
+			port = socket.getLocalPort();
+			address = socket.getLocalAddress().getHostAddress();
 		} catch (SocketException e) {
 			log(e);
 			return false;
@@ -63,12 +100,9 @@ public class UDPSocketAdapter {
 	}
 	
 	public boolean close() {
-		if(receiveThread != null) {
-			run.stop();
-			Thread t = receiveThread;
-			receiveThread = null;
-			t.interrupt();
-		}
+		stopListeningThread();
+		stopSendingThread();
+		socket.close();
 		return true;
 	}
 	
@@ -80,36 +114,31 @@ public class UDPSocketAdapter {
 		return port;
 	}
 	
-	public DatagramPacket readPacket() {
+	public DatagramPacket readReceivedPacket() {
 		return theReceiveQueue.poll();
 	}
 	
+	public DatagramPacket readPacketToSend() {
+		return theSendQueue.poll();
+	}
+	
 	public boolean receive() {
-		
-		log("execute receive");
-		
-		run = new UDPListeningThread(context, receiveSocket);
-		receiveThread = new Thread(run);
-		
-		log("retrievethread created");
-		
-		receiveThread.start();
-		
+		startListeningThread();
 		return true;
 	}
 	
 	public boolean send(byte[] data, String ip, int port) {
+		if(sendingThread == null) {
+			startSendingThread();
+		}
 		try {
 			InetAddress address = InetAddress.getByName(ip);
 			DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
-			sendSocket.send(packet);
+			theSendQueue.add(packet);
 			return true;
 		} catch (UnknownHostException e) {
 			log(e);
-		} catch (IOException e) {
-			log(e);
 		}
-		
 		return false;
 	}
 
@@ -126,10 +155,26 @@ public class UDPSocketAdapter {
 	}
 	
 	public void log(Exception e) {
-		//context.dispatchStatusEventAsync("error", e.getMessage());
+		context.dispatchStatusEventAsync("error", e.getMessage());
 	}
 	
 	public void log(String message) {
-		//context.dispatchStatusEventAsync("log", message);
+		context.dispatchStatusEventAsync("log", message);
+	}
+	
+	public String getLocalIpAddress() {
+	    try {
+	        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+	            NetworkInterface intf = en.nextElement();
+	            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+	                InetAddress inetAddress = enumIpAddr.nextElement();
+	                if (!inetAddress.isLoopbackAddress()) {
+	                    return inetAddress.getHostAddress().toString();
+	                }
+	            }
+	        }
+	    } catch (SocketException ex) {
+	    }
+	    return null;
 	}
 }
