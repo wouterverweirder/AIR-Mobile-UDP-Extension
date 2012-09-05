@@ -5,13 +5,18 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.channels.DatagramChannel;
-import java.util.Enumeration;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.text.format.Formatter;
 
 public class UDPSocketAdapter {
 	
@@ -87,6 +92,7 @@ public class UDPSocketAdapter {
 	}
 	
 	public boolean bind(int port, String host) {
+		log("bind on " + host + ":" + port);
 		try {
 			SocketAddress addr = new InetSocketAddress(host, port);
 			socket.bind(addr);
@@ -163,18 +169,13 @@ public class UDPSocketAdapter {
 	}
 	
 	public String getLocalIpAddress() {
-	    try {
-	        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-	            NetworkInterface intf = en.nextElement();
-	            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-	                InetAddress inetAddress = enumIpAddr.nextElement();
-	                if (!inetAddress.isLoopbackAddress()) {
-	                    return inetAddress.getHostAddress().toString();
-	                }
-	            }
-	        }
-	    } catch (SocketException ex) {
-	    }
-	    return null;
+		ConnectivityManager conMan = (ConnectivityManager) context.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		if(wifi.isAvailable()) {
+			WifiManager wifiMan = (WifiManager) context.getActivity().getSystemService(Context.WIFI_SERVICE);
+			WifiInfo wifiInfo = wifiMan.getConnectionInfo();
+			return Formatter.formatIpAddress(wifiInfo.getIpAddress());
+		}
+		return null;
 	}
 }
