@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<application xmlns="http://ns.adobe.com/air/application/3.1">
+<application xmlns="http://ns.adobe.com/air/application/3.4">
 
 <!-- Adobe AIR Application Descriptor File Template.
 
@@ -87,7 +87,7 @@
 		<!-- The window's initial maximum size, specified as a width/height pair in pixels, such as "1600 1200". Optional. -->
 		<!-- <maxSize></maxSize> -->
 
-        <!-- The initial aspect ratio of the app when launched (either "portrait" or "landscape"). Optional. Mobile only. Default is the natural orientation of the device -->
+        <!-- The aspect ratio of the app ("portrait" or "landscape" or "any"). Optional. Mobile only. Default is the natural orientation of the device -->
 
         <!-- <aspectRatio></aspectRatio> -->
 
@@ -103,6 +103,9 @@
 
         <!-- <renderMode></renderMode> -->
 
+        <!-- Whether the default direct mode rendering context allocates storage for depth and stencil buffers.  Optional.  Default false. -->
+        <!-- <depthAndStencil></depthAndStencil> -->
+
 		<!-- Whether or not to pan when a soft keyboard is raised or lowered (either "pan" or "none").  Optional.  Defaults "pan." -->
 		<!-- <softKeyboardBehavior></softKeyboardBehavior> -->
 		<autoOrients>false</autoOrients>
@@ -117,6 +120,10 @@
 	<!-- only the profiles which your application does support. -->
 	<!-- <supportedProfiles>desktop extendedDesktop mobileDevice extendedMobileDevice</supportedProfiles> -->
 
+	<!-- Languages supported by application -->
+	<!-- Only these languages can be specified -->
+	<!-- <supportedLanguages>en de cs es fr it ja ko nl pl pt ru sv tr zh</supportedLanguages> -->
+
 	<!-- The subpath of the standard default installation location to use. Optional. -->
 	<!-- <installFolder></installFolder> -->
 
@@ -127,13 +134,20 @@
 	specify the path to a PNG file included in the AIR package. Optional. -->
 	<!-- <icon>
 		<image16x16></image16x16>
+		<image29x29></image29x29>
 		<image32x32></image32x32>
 		<image36x36></image36x36>
 		<image48x48></image48x48>
+		<image50x50></image50x50>
 		<image57x57></image57x57>
+		<image58x58></image58x58>
 		<image72x72></image72x72>
+		<image100x100></image100x100>
 		<image114x114></image114x114>
 		<image128x128></image128x128>
+		<image144x144></image144x144>
+		<image512x512></image512x512>
+		<image1024x1024></image1024x1024>
 	</icon> -->
 
 	<!-- Whether the application handles the update when a user double-clicks an update version
