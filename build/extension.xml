@@ -1,0 +1,23 @@
+<extension xmlns="NATIVE_LIBRARY_XMLNS">
+	<id>be.aboutme.nativeExtensions.udp.UDPSocket</id>
+	<versionNumber>1.1.0</versionNumber>
+	<platforms>
+		<platform name="iPhone-ARM">
+			<applicationDeployment>
+				<nativeLibrary>NATIVE_LIBRARY_IOS</nativeLibrary>
+				<initializer>UDPSocketiOSLibraryExtInitializer</initializer>
+				<finalizer>UDPSocketiOSLibraryExtFinalizer</finalizer>
+			</applicationDeployment>
+		</platform>
+		<platform name="Android-ARM">
+			<applicationDeployment>
+				<nativeLibrary>NATIVE_LIBRARY_ANDROID</nativeLibrary>
+				<initializer>be.aboutme.nativeExtensions.udp.UDPSocketAndroidLibrary</initializer>
+				<finalizer>be.aboutme.nativeExtensions.udp.UDPSocketAndroidLibrary</finalizer>
+			</applicationDeployment>
+		</platform>
+		<platform name="default">
+			<applicationDeployment />
+		</platform>
+	</platforms>
+</extension>

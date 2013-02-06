@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'UDPSocketiOSLibrary' target in the 'UDPSocketiOSLibrary' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif

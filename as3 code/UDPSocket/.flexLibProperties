@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="be.aboutme.nativeExtensions.udp.UDPSocket"/>
+    <classEntry path="be.aboutme.nativeExtensions.udp.implementation.NativeImplementation"/>
+    <classEntry path="be.aboutme.nativeExtensions.udp.implementation.IUDPSocketImplementation"/>
+    <classEntry path="be.aboutme.nativeExtensions.udp.implementation.ActionscriptImplementation"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

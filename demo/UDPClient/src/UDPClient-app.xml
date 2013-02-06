@@ -5,7 +5,7 @@
 
 	Specifies parameters for identifying, installing, and launching AIR applications.
 
-	xmlns - The Adobe AIR namespace: http://ns.adobe.com/air/application/3.1
+	xmlns - The Adobe AIR namespace: http://ns.adobe.com/air/application/3.4
 			The last segment of the namespace specifies the version 
 			of the AIR runtime required for this application to run.
 			
@@ -99,17 +99,18 @@
 
         <!-- <fullScreen></fullScreen> -->
 
-        <!-- The render mode for the app (either auto, cpu, or gpu). Optional. Mobile only. Default auto -->
+        <!-- The render mode for the app (either auto, cpu, gpu, or direct). Optional. Default auto -->
 
-        <!-- <renderMode></renderMode> -->
+        <renderMode>direct</renderMode>
 
         <!-- Whether the default direct mode rendering context allocates storage for depth and stencil buffers.  Optional.  Default false. -->
         <!-- <depthAndStencil></depthAndStencil> -->
 
 		<!-- Whether or not to pan when a soft keyboard is raised or lowered (either "pan" or "none").  Optional.  Defaults "pan." -->
 		<!-- <softKeyboardBehavior></softKeyboardBehavior> -->
-		<autoOrients>false</autoOrients>
-        <fullScreen>true</fullScreen>
+
+		<autoOrients>true</autoOrients>
+        <fullScreen>false</fullScreen>
         <visible>true</visible>
     </initialWindow>
 
@@ -244,26 +245,11 @@
 	<!-- End of the schema for adding the android specific tags in AndroidManifest.xml file -->
 
 <android>
-        <colorDepth>16bit</colorDepth>
         <manifestAdditions><![CDATA[
 			<manifest android:installLocation="auto">
-			    <!--See the Adobe AIR documentation for more information about setting Google Android permissions-->
-			    <!--Removing the permission android.permission.INTERNET will have the side effect
-					of preventing you from debugging your application on your device-->
-			    <uses-permission android:name="android.permission.INTERNET"/>
-			    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
-			    <!--<uses-permission android:name="android.permission.READ_PHONE_STATE"/>-->
-			    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>-->
-			    <!--The DISABLE_KEYGUARD and WAKE_LOCK permissions should be toggled together
-					in order to access AIR's SystemIdleMode APIs-->
-			    <!--<uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>-->
-			    <!--<uses-permission android:name="android.permission.WAKE_LOCK"/>-->
-			    <!--<uses-permission android:name="android.permission.CAMERA"/>-->
-			    <!--<uses-permission android:name="android.permission.RECORD_AUDIO"/>-->
-			    <!--The ACCESS_NETWORK_STATE and ACCESS_WIFI_STATE permissions should be toggled
-					together in order to use AIR's NetworkInfo APIs-->
-			    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-			    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+				<uses-permission android:name="android.permission.INTERNET"/>
+				<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+				<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 			</manifest>
 			
 		]]></manifestAdditions>
@@ -278,12 +264,7 @@
 		]]></InfoAdditions>
         <requestedDisplayResolution>high</requestedDisplayResolution>
     </iPhone>
-    <supportedProfiles>mobileDevice extendedMobileDevice</supportedProfiles>
-	
-
-
 <extensions>
-        
-    <extensionID>be.aboutme.nativeExtensions.udp.UDPSocket</extensionID>
+        <extensionID>be.aboutme.nativeExtensions.udp.UDPSocket</extensionID>
     </extensions>
 </application>

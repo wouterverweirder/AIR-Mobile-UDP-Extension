@@ -58,7 +58,9 @@ when it receives an amf object with command property set to "PLAY"
 					dataBytes.position = 0;
 					var msg:String = dataBytes.readUTFBytes(dataBytes.bytesAvailable);
 					messagesArea.appendText(msg);
-				}				
+					//send it back
+					datagramSocket.send(dataBytes, 0, 0, event.srcAddress, event.srcPort);
+				}
 			}
 			
 		]]>

@@ -28,13 +28,12 @@
  */
 package be.aboutme.nativeExtensions.udp
 {
-	import flash.desktop.NativeApplication;
-	import flash.errors.IOError;
+	import be.aboutme.nativeExtensions.udp.implementation.ActionscriptImplementation;
+	import be.aboutme.nativeExtensions.udp.implementation.IUDPSocketImplementation;
+	import be.aboutme.nativeExtensions.udp.implementation.NativeImplementation;
+	
 	import flash.events.DatagramSocketDataEvent;
-	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.events.StatusEvent;
-	import flash.external.ExtensionContext;
 	import flash.utils.ByteArray;
 	
 	/**
@@ -45,50 +44,20 @@ package be.aboutme.nativeExtensions.udp
 	public class UDPSocket extends EventDispatcher
 	{
 
-		private var extContext:ExtensionContext = null;
+		private var implementation:IUDPSocketImplementation;
 		
 		/**
 		 * UDPSocket constructor
 		 */ 
 		public function UDPSocket()
 		{
-			extContext = ExtensionContext.createExtensionContext("be.aboutme.nativeExtensions.udp.UDPSocket", null);
-			extContext.addEventListener(StatusEvent.STATUS, statusHandler);
-			extContext.call("initNativeCode");
-			//auto-dispose on application exit
-			if(NativeApplication.nativeApplication != null)
+			if(NativeImplementation.isSupported)
 			{
-				NativeApplication.nativeApplication.addEventListener("close", nativeApplicationCloseHandler, false, 0, true);
+				implementation = new NativeImplementation(this);
 			}
-		}
-		
-		protected function nativeApplicationCloseHandler(event:Event):void
-		{
-			dispose();
-		}
-		
-		/**
-		 * This event handler is called when the extension context dispatches
-		 * status events from the native extension.
-		 */ 
-		protected function statusHandler(event:StatusEvent):void
-		{
-			switch(event.code)
+			else
 			{
-				case "receive":
-					var bytes:ByteArray = new ByteArray();
-					var packet:DatagramSocketDataEvent = extContext.call("readPacket", bytes) as DatagramSocketDataEvent;
-					while(packet != null)
-					{
-						packet.data = bytes;
-						dispatchEvent(packet);
-						bytes = new ByteArray();
-						packet = extContext.call("readPacket", bytes) as DatagramSocketDataEvent;
-					}
-					break;
-				default:
-					trace(event.code, event.level);
-					break;
+				implementation = new ActionscriptImplementation(this);
 			}
 		}
 		
@@ -100,10 +69,7 @@ package be.aboutme.nativeExtensions.udp
 		 */ 
 		public function send(bytes:ByteArray, address:String, port:uint):void
 		{
-			if(extContext != null)
-			{
-				extContext.call("send", bytes, address, port) as Boolean;
-			}
+			implementation.send(bytes, address, port);
 		}
 		
 		/**
@@ -113,16 +79,7 @@ package be.aboutme.nativeExtensions.udp
 		 */ 
 		public function bind(port:uint, localAddress:String = "0.0.0.0"):void
 		{
-			if(extContext != null)
-			{
-				trace("bind called on localAddress: " + localAddress);
-				var success:Boolean = extContext.call("bind", port, localAddress);
-				if(!success)
-				{
-					//throw an error
-					throw new IOError("UDPSocket could not be bound!");
-				}
-			}
+			implementation.bind(port, localAddress);
 		}
 		
 		/**
@@ -130,10 +87,7 @@ package be.aboutme.nativeExtensions.udp
 		 */ 
 		public function receive():void
 		{
-			if(extContext != null)
-			{
-				extContext.call("receive");
-			}
+			implementation.receive();
 		}
 		
 		/**
@@ -143,17 +97,7 @@ package be.aboutme.nativeExtensions.udp
 		 */ 
 		public function close():void
 		{
-			dispose();
-		}
-		
-		protected function dispose():void
-		{
-			if(extContext != null)
-			{
-				extContext.removeEventListener(StatusEvent.STATUS, statusHandler);
-				extContext.dispose();
-				extContext = null;
-			}
+			implementation.close();
 		}
 	}
 }
