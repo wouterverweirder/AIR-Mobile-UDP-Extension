@@ -10,12 +10,12 @@
 		6C2CB313148FB7F10036F1A6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C2CB312148FB7F10036F1A6 /* Foundation.framework */; };
 		6C2CB319148FB7F10036F1A6 /* UDPSocketiOSLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C2CB318148FB7F10036F1A6 /* UDPSocketiOSLibrary.m */; };
 		6C2CB320148FB81A0036F1A6 /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C2CB31F148FB81A0036F1A6 /* FlashRuntimeExtensions.h */; };
-		6C5057AD1491433C0095055C /* UDPSocketAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C5057AB1491433C0095055C /* UDPSocketAdapter.h */; };
-		6C5057AE1491433C0095055C /* UDPSocketAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C5057AC1491433C0095055C /* UDPSocketAdapter.m */; };
-		6C5057B1149145B40095055C /* AsyncUdpSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C5057AF149145B40095055C /* AsyncUdpSocket.h */; };
-		6C5057B2149145B40095055C /* AsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C5057B0149145B40095055C /* AsyncUdpSocket.m */; };
-		6C80B48214924CD8000ABF21 /* UDPPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C80B48014924CD8000ABF21 /* UDPPacket.h */; };
-		6C80B48314924CD8000ABF21 /* UDPPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C80B48114924CD8000ABF21 /* UDPPacket.m */; };
+		6C58A9201724449A00DACCD9 /* GCDAsyncUdpSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C58A91E1724449A00DACCD9 /* GCDAsyncUdpSocket.h */; };
+		6C58A9211724449A00DACCD9 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C58A91F1724449A00DACCD9 /* GCDAsyncUdpSocket.m */; };
+		6C58A9251724456300DACCD9 /* UDPSocketAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C58A9231724456300DACCD9 /* UDPSocketAdapter.m */; };
+		6C58A928172445C100DACCD9 /* UDPPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C58A926172445C100DACCD9 /* UDPPacket.h */; };
+		6C58A929172445C100DACCD9 /* UDPPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C58A927172445C100DACCD9 /* UDPPacket.m */; };
+		6C58A92B1724460500DACCD9 /* UDPSocketAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C58A92A1724460500DACCD9 /* UDPSocketAdapter.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,12 +25,12 @@
 		6C2CB317148FB7F10036F1A6 /* UDPSocketiOSLibrary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UDPSocketiOSLibrary.h; sourceTree = "<group>"; };
 		6C2CB318148FB7F10036F1A6 /* UDPSocketiOSLibrary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UDPSocketiOSLibrary.m; sourceTree = "<group>"; };
 		6C2CB31F148FB81A0036F1A6 /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlashRuntimeExtensions.h; sourceTree = "<group>"; };
-		6C5057AB1491433C0095055C /* UDPSocketAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPSocketAdapter.h; sourceTree = "<group>"; };
-		6C5057AC1491433C0095055C /* UDPSocketAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDPSocketAdapter.m; sourceTree = "<group>"; };
-		6C5057AF149145B40095055C /* AsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncUdpSocket.h; sourceTree = "<group>"; };
-		6C5057B0149145B40095055C /* AsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncUdpSocket.m; sourceTree = "<group>"; };
-		6C80B48014924CD8000ABF21 /* UDPPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPPacket.h; sourceTree = "<group>"; };
-		6C80B48114924CD8000ABF21 /* UDPPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDPPacket.m; sourceTree = "<group>"; };
+		6C58A91E1724449A00DACCD9 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		6C58A91F1724449A00DACCD9 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		6C58A9231724456300DACCD9 /* UDPSocketAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDPSocketAdapter.m; sourceTree = "<group>"; };
+		6C58A926172445C100DACCD9 /* UDPPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPPacket.h; sourceTree = "<group>"; };
+		6C58A927172445C100DACCD9 /* UDPPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UDPPacket.m; sourceTree = "<group>"; };
+		6C58A92A1724460500DACCD9 /* UDPSocketAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPSocketAdapter.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,16 +73,16 @@
 		6C2CB314148FB7F10036F1A6 /* UDPSocketiOSLibrary */ = {
 			isa = PBXGroup;
 			children = (
-				6C5057AF149145B40095055C /* AsyncUdpSocket.h */,
-				6C5057B0149145B40095055C /* AsyncUdpSocket.m */,
+				6C58A926172445C100DACCD9 /* UDPPacket.h */,
+				6C58A927172445C100DACCD9 /* UDPPacket.m */,
+				6C58A91E1724449A00DACCD9 /* GCDAsyncUdpSocket.h */,
+				6C58A91F1724449A00DACCD9 /* GCDAsyncUdpSocket.m */,
 				6C2CB31F148FB81A0036F1A6 /* FlashRuntimeExtensions.h */,
 				6C2CB317148FB7F10036F1A6 /* UDPSocketiOSLibrary.h */,
 				6C2CB318148FB7F10036F1A6 /* UDPSocketiOSLibrary.m */,
 				6C2CB315148FB7F10036F1A6 /* Supporting Files */,
-				6C5057AB1491433C0095055C /* UDPSocketAdapter.h */,
-				6C5057AC1491433C0095055C /* UDPSocketAdapter.m */,
-				6C80B48014924CD8000ABF21 /* UDPPacket.h */,
-				6C80B48114924CD8000ABF21 /* UDPPacket.m */,
+				6C58A9231724456300DACCD9 /* UDPSocketAdapter.m */,
+				6C58A92A1724460500DACCD9 /* UDPSocketAdapter.h */,
 			);
 			path = UDPSocketiOSLibrary;
 			sourceTree = "<group>";
@@ -103,9 +103,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6C2CB320148FB81A0036F1A6 /* FlashRuntimeExtensions.h in Headers */,
-				6C5057AD1491433C0095055C /* UDPSocketAdapter.h in Headers */,
-				6C5057B1149145B40095055C /* AsyncUdpSocket.h in Headers */,
-				6C80B48214924CD8000ABF21 /* UDPPacket.h in Headers */,
+				6C58A9201724449A00DACCD9 /* GCDAsyncUdpSocket.h in Headers */,
+				6C58A928172445C100DACCD9 /* UDPPacket.h in Headers */,
+				6C58A92B1724460500DACCD9 /* UDPSocketAdapter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,9 +160,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6C2CB319148FB7F10036F1A6 /* UDPSocketiOSLibrary.m in Sources */,
-				6C5057AE1491433C0095055C /* UDPSocketAdapter.m in Sources */,
-				6C5057B2149145B40095055C /* AsyncUdpSocket.m in Sources */,
-				6C80B48314924CD8000ABF21 /* UDPPacket.m in Sources */,
+				6C58A9211724449A00DACCD9 /* GCDAsyncUdpSocket.m in Sources */,
+				6C58A9251724456300DACCD9 /* UDPSocketAdapter.m in Sources */,
+				6C58A929172445C100DACCD9 /* UDPPacket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,7 +184,7 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -204,7 +204,7 @@
 				CONFIGURATION_BUILD_DIR = ../../bin;
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -220,6 +220,7 @@
 		6C2CB31D148FB7F10036F1A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/UDPSocketiOSLibrary.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UDPSocketiOSLibrary/UDPSocketiOSLibrary-Prefix.pch";
@@ -233,6 +234,7 @@
 		6C2CB31E148FB7F10036F1A6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/UDPSocketiOSLibrary.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UDPSocketiOSLibrary/UDPSocketiOSLibrary-Prefix.pch";

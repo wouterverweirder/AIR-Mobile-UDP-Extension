@@ -6,24 +6,22 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#include "FlashRuntimeExtensions.h"
-#include "AsyncUdpSocket.h"
-#include "UDPPacket.h"
+#import "FlashRuntimeExtensions.h"
+#import "UDPPacket.h"
+#import "GCDAsyncUdpSocket.h"
 
 @interface UDPSocketAdapter : NSObject
 {
-    AsyncUdpSocket* socket;
-    
+    GCDAsyncUdpSocket *udpSocket;
     FREContext _ctx;
-    int _port;
-    NSString* _address;
-    
-    NSMutableArray* theReceiveQueue;
+    NSMutableArray *theReceiveQueue;
 }
+
 - (id)initWithContext:(FREContext)ctx;
 - (BOOL)send:(NSData*)data toHost:(NSString*)host port:(int)port;
 - (BOOL)bind:(int)port onAddress:(NSString*)address;
 - (BOOL)receive;
 - (UDPPacket*)readPacket;
 - (BOOL)close;
+
 @end

@@ -9,12 +9,12 @@
 
 
 @interface UDPPacket : NSObject
-{
-@public
-    NSString * srcAddress;
-    UInt16 srcPort;
-    NSString * dstAddress;
-    UInt16 dstPort;
-    NSData * data;
-}
+
+@property (nonatomic, strong) NSString *srcAddress;
+@property (nonatomic) UInt16 srcPort;
+
+@property (nonatomic, strong) NSString *dstAddress;
+@property (nonatomic) UInt16 dstPort;
+@property (nonatomic, strong) NSData *data;
+
 @end

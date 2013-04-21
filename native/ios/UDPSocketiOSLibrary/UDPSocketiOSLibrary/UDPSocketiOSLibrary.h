@@ -16,7 +16,10 @@ FREObject Bind(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 FREObject Receive(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 FREObject ReadPacket(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 FREObject InitNativeCode(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
+FREObject DisposeNativeCode(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 FREObject Close(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
+
+UDPSocketAdapter* getUDPSocketAdapter(FREObject freNr);
 
 void ContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, 
 						uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet);

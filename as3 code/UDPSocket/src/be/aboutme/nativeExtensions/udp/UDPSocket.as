@@ -41,6 +41,7 @@ package be.aboutme.nativeExtensions.udp
 	 * Universal Datagram Packets (UDP) on AIR for iOS projects.
 	 */
 	[Event(name="data", type="flash.events.DatagramSocketDataEvent")]
+	[Event(name="close", type="flash.events.Event")]
 	public class UDPSocket extends EventDispatcher
 	{
 

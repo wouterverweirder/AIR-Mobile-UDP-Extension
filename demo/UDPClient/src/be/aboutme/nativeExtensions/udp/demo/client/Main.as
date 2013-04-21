@@ -49,6 +49,7 @@ package be.aboutme.nativeExtensions.udp.demo.client
 			
 			udpSocket = new UDPSocket();
 			udpSocket.addEventListener(DatagramSocketDataEvent.DATA, udpDataHandler);
+			udpSocket.addEventListener("close", udpCloseHandler);
 			udpSocket.bind(1235);
 			udpSocket.receive();
 			
@@ -91,6 +92,11 @@ package be.aboutme.nativeExtensions.udp.demo.client
 			stage.addEventListener(Event.RESIZE, layout);
 			
 			sendButton.addEventListener(Event.TRIGGERED, sendTriggeredHandler);
+		}
+		
+		protected function udpCloseHandler(event:flash.events.Event):void
+		{
+			outputText.text += "UDPSocket Closed\n";
 		}
 		
 		protected function sendTriggeredHandler(event:Event):void

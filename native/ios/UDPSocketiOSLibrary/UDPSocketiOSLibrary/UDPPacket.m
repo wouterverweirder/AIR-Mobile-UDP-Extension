@@ -10,6 +10,8 @@
 
 @implementation UDPPacket
 
+@synthesize data = _data, dstAddress = _dstAddress, dstPort = _dstPort, srcAddress = _srcAddress, srcPort = _srcPort;
+
 - (id)init
 {
     self = [super init];
@@ -19,11 +21,5 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [data release];
-    [srcAddress release];
-    [super dealloc];
-}
 
 @end

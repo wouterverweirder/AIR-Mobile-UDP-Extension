@@ -2,105 +2,118 @@
 //  UDPSocketAdapter.m
 //  UDPSocketiOSLibrary
 //
-//  Created by Wouter Verweirder on 08/12/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Created by Wouter Verweirder on 21/04/13.
+//
 //
 
 #import "UDPSocketAdapter.h"
-#import "AsyncUdpSocket.h"
+
+@interface UDPSocketAdapter ()
+{
+	long tag;
+}
+@end
 
 @implementation UDPSocketAdapter
 
 - (id)initWithContext:(FREContext)ctx
 {
-    if(self = [super init])
+    self = [super init];
+    if(self)
     {
         _ctx = ctx;
+        theReceiveQueue = [[NSMutableArray alloc] init];
         
-        theReceiveQueue = [[NSMutableArray alloc] initWithCapacity:5];
-        
-        NSError *error = nil;
-        
-        socket = [[AsyncUdpSocket alloc] initWithDelegate:self];
-        [socket enableBroadcast:YES error:&error];
-        
-        _address = nil;
+        udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+        [udpSocket enableBroadcast:YES error:nil];
     }
     return self;
 }
 
-- (void)dealloc
+- (BOOL)send:(NSData*)data toHost:(NSString*)host port:(int)port
 {
-    [socket close];
-    [socket release];
-    socket = nil;
-    [theReceiveQueue release];
-    theReceiveQueue = nil;
-	[super dealloc];
-}
-
-- (BOOL)send:(NSData *)data toHost:(NSString*)host port:(int)port
-{
-    return [socket sendData:data toHost:host port:port withTimeout:-1 tag:0];
+	[udpSocket sendData:data toHost:host port:port withTimeout:-1 tag:tag];
+    tag++;
+    return YES;
 }
 
 - (BOOL)bind:(int)port onAddress:(NSString*)address
 {
-    if(_address != nil)
-        [_address release];
-    
-    _port = port;
-    _address = [address retain];
-    
+    NSError *error = nil;
+    if (![udpSocket bindToPort:port error:&error])
+    {
+        return NO;
+    }
     return YES;
 }
 
 - (BOOL)receive
 {
     NSError *error = nil;
-    if(![socket bindToAddress:_address port:_port error:&error])
+    if (![udpSocket beginReceiving:&error])
     {
+        NSLog(@"Error beginReceiving %@", error);
         return NO;
     }
-    [socket receiveWithTimeout:-1 tag:0];
     return YES;
 }
 
-- (UDPPacket *)readPacket
+- (UDPPacket*)readPacket
 {
-    if([theReceiveQueue count] > 0)
+    if(theReceiveQueue.count > 0)
     {
-        id packet = [[theReceiveQueue objectAtIndex:0] retain];
+        UDPPacket *packet = [theReceiveQueue objectAtIndex:0];
         [theReceiveQueue removeObjectAtIndex:0];
         return packet;
     }
     return nil;
 }
 
-- (BOOL)close
+- (BOOL) close
 {
-    [socket close];
+    if(udpSocket)
+    {
+        [udpSocket close];
+        udpSocket = nil;
+    }
     return YES;
 }
 
-- (BOOL) onUdpSocket:(AsyncUdpSocket *)sock didReceiveData:(NSData *)data withTag:(long)tag fromHost:(NSData *)host port:(int)port
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag
 {
+    NSLog(@"didSendDataWithTag");
+}
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error
+{
+    NSLog(@"didNotSendDataWithTag");
+}
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data fromAddress:(NSData *)address withFilterContext:(id)filterContext
+{
+    NSLog(@"didReceiveData");
+    NSString *host = nil;
+    uint16_t port = 0;
+    [GCDAsyncUdpSocket getHost:&host port:&port fromAddress:address];
+    
     //create packet
     UDPPacket *packet = [[UDPPacket alloc] init];
-    packet->srcPort = port;
-    packet->srcAddress = [host retain];
-    packet->data = [data retain];
-    packet->dstAddress = [sock localHost];
-    packet->dstPort = [sock localPort];
-    
+    packet.srcPort = port;
+    packet.srcAddress = host;
+    packet.data = data;
+    packet.dstAddress = udpSocket.localHost;
+    packet.dstPort = udpSocket.localPort;
     
     //add it to the queue, so Actionscript can pick it up later
     [theReceiveQueue addObject:packet];
     //dispatch the event to the actionscript library
 	FREDispatchStatusEventAsync(_ctx, (const uint8_t *) "receive", (const uint8_t *) "");
-    //listen for incoming packets
-    [socket receiveWithTimeout:-1 tag:0];
-    return YES;
+}
+
+- (void)udpSocketDidClose:(GCDAsyncUdpSocket *)sock withError:(NSError *)error
+{
+    NSLog(@"udpSocketDidClose");
+	FREDispatchStatusEventAsync(_ctx, (const uint8_t *) "close", (const uint8_t *) "");
 }
 
 @end
