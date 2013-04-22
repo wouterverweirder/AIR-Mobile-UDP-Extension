@@ -30,6 +30,11 @@
     return self;
 }
 
+- (void)dealloc
+{
+    NSLog(@"UDPSocketAdapter dealloc called");
+}
+
 - (BOOL)send:(NSData*)data toHost:(NSString*)host port:(int)port
 {
 	[udpSocket sendData:data toHost:host port:port withTimeout:-1 tag:tag];
@@ -81,17 +86,14 @@
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag
 {
-    NSLog(@"didSendDataWithTag");
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error
 {
-    NSLog(@"didNotSendDataWithTag");
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data fromAddress:(NSData *)address withFilterContext:(id)filterContext
 {
-    NSLog(@"didReceiveData");
     NSString *host = nil;
     uint16_t port = 0;
     [GCDAsyncUdpSocket getHost:&host port:&port fromAddress:address];
@@ -112,7 +114,6 @@
 
 - (void)udpSocketDidClose:(GCDAsyncUdpSocket *)sock withError:(NSError *)error
 {
-    NSLog(@"udpSocketDidClose");
 	FREDispatchStatusEventAsync(_ctx, (const uint8_t *) "close", (const uint8_t *) "");
 }
 

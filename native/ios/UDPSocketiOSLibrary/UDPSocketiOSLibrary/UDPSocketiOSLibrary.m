@@ -10,8 +10,6 @@
 #import "UDPSocketAdapter.h"
 #import "UDPPacket.h"
 
-NSMutableDictionary *adapterDictionary;
-
 FREObject IsSupported(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 {
     FREObject freIsSupported;
@@ -21,17 +19,18 @@ FREObject IsSupported(FREContext ctx, void* funcData, uint32_t argc, FREObject a
 
 FREObject Send(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 {
-    UDPSocketAdapter *adapter = getUDPSocketAdapter(argv[0]);
+    UDPSocketAdapter *adapter = getUDPSocketAdapter(ctx);
+    
     uint32_t ipLength;
     const uint8_t* ipValue;
-    FREGetObjectAsUTF8( argv[2], &ipLength, &ipValue );
+    FREGetObjectAsUTF8( argv[1], &ipLength, &ipValue );
     
     uint32_t portValue;
-    FREGetObjectAsUint32(argv[3], &portValue);
+    FREGetObjectAsUint32(argv[2], &portValue);
     
     //Get Byte Array from flash
     FREObject length;
-    FREObject objectByteArray = argv[1];
+    FREObject objectByteArray = argv[0];
     FREGetObjectProperty(objectByteArray, (const uint8_t*) "length", &length, NULL);   
     
     int numBytes;
@@ -55,14 +54,14 @@ FREObject Send(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 
 FREObject Bind(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 {
-    UDPSocketAdapter *adapter = getUDPSocketAdapter(argv[0]);
+    UDPSocketAdapter *adapter = getUDPSocketAdapter(ctx);
     
     uint32_t portValue;
-    FREGetObjectAsUint32(argv[1], &portValue);
+    FREGetObjectAsUint32(argv[0], &portValue);
     
     uint32_t addressLength;
     const uint8_t* address;
-    FREGetObjectAsUTF8(argv[2], &addressLength, &address);
+    FREGetObjectAsUTF8(argv[1], &addressLength, &address);
     
     NSString* addressString = [NSString stringWithUTF8String:(const char*) address];
     if([addressString isEqualToString:[NSString stringWithUTF8String:"0.0.0.0"]]) {
@@ -79,7 +78,7 @@ FREObject Bind(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 
 FREObject Receive(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 {
-    UDPSocketAdapter *adapter = getUDPSocketAdapter(argv[0]);
+    UDPSocketAdapter *adapter = getUDPSocketAdapter(ctx);
     BOOL success = [adapter receive];
     
     FREObject result;
@@ -90,7 +89,7 @@ FREObject Receive(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[
 
 FREObject ReadPacket(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 {
-    UDPSocketAdapter *adapter = getUDPSocketAdapter(argv[0]);
+    UDPSocketAdapter *adapter = getUDPSocketAdapter(ctx);
     FREObject result;
     UDPPacket * packet = [adapter readPacket];
     if(packet != nil)
@@ -102,7 +101,7 @@ FREObject ReadPacket(FREContext ctx, void* funcData, uint32_t argc, FREObject ar
         
         int len = [packet.data length];
         
-        FREObject objectByteArray = argv[1];
+        FREObject objectByteArray = argv[0];
         
         FREByteArray byteArray;
         FREObject length;
@@ -127,16 +126,18 @@ FREObject ReadPacket(FREContext ctx, void* funcData, uint32_t argc, FREObject ar
         FREObject dstPort;
         FRENewObjectFromUint32(packet.dstPort, &dstPort);
         FRESetObjectProperty(result, (const uint8_t*) "dstPort", dstPort, NULL);
+        //release it
+        packet = nil;
+        //return the result
+        return result;
     }
-    //release it
-    packet = nil;
-    //return the result
-    return result;
+    return NULL;
 }
 
 FREObject Close(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 {
-    UDPSocketAdapter *adapter = getUDPSocketAdapter(argv[0]);
+    UDPSocketAdapter *adapter = getUDPSocketAdapter(ctx);
+    
     BOOL success = [adapter close];
     
     FREObject result;
@@ -148,21 +149,6 @@ FREObject Close(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 FREObject InitNativeCode(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 {
     NSLog(@"Entering InitNativeCode()");
-    
-    int nr;
-    FREGetObjectAsInt32(argv[0], &nr);
-    UDPSocketAdapter *adapter = [[UDPSocketAdapter alloc] initWithContext:ctx];
-    [adapterDictionary setObject:adapter forKey:[NSString stringWithFormat:@"%i", nr]];
-    return NULL;
-}
-
-FREObject DisposeNativeCode(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
-{
-    NSLog(@"Entering DisposeNativeCode()");
-    
-    int nr;
-    FREGetObjectAsInt32(argv[0], &nr);
-    [adapterDictionary removeObjectForKey:[NSString stringWithFormat:@"%i", nr]];
     return NULL;
 }
 
@@ -172,7 +158,6 @@ FRENamedFunction _Shared_methods[] = {
 
 FRENamedFunction _Instance_methods[] = {
     { (const uint8_t*) "initNativeCode", 0, InitNativeCode },
-    { (const uint8_t*) "disposeNativeCode", 0, DisposeNativeCode },
     { (const uint8_t*) "send", 0, Send },
     { (const uint8_t*) "bind", 0, Bind },
     { (const uint8_t*) "receive", 0, Receive },
@@ -180,11 +165,11 @@ FRENamedFunction _Instance_methods[] = {
     { (const uint8_t*) "close", 0, Close }
 };
 
-UDPSocketAdapter* getUDPSocketAdapter(FREObject freNr)
+UDPSocketAdapter* getUDPSocketAdapter(FREContext ctx)
 {
-    int nr;
-    FREGetObjectAsInt32(freNr, &nr);
-    return [adapterDictionary objectForKey:[NSString stringWithFormat:@"%i", nr]];
+    __autoreleasing UDPSocketAdapter *adapter;
+    FREGetContextNativeData(ctx, (void*)(void*)&adapter);
+    return adapter;
 }
 
 void ContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, 
@@ -202,6 +187,8 @@ void ContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx,
     {
         *numFunctionsToTest = sizeof( _Instance_methods ) / sizeof( FRENamedFunction );
         *functionsToSet = _Instance_methods;
+        
+        FRESetContextNativeData(ctx, (__bridge_retained void *) [[UDPSocketAdapter alloc] initWithContext:ctx]);
     }
     
     NSLog(@"Exiting ContextInitializer()");
@@ -212,6 +199,15 @@ void ContextFinalizer(FREContext ctx)
 {
     
     NSLog(@"Entering ContextFinalizer()");
+
+    UDPSocketAdapter *adapter;
+    FREResult rc = FREGetContextNativeData(ctx, (void*)(void*)&adapter);
+    if(rc == FRE_OK)
+    {
+        [adapter close];
+        adapter = nil;
+    }
+    
     NSLog(@"Exiting ContextFinalizer()");
     
 	return;
@@ -227,8 +223,6 @@ void UDPSocketiOSLibraryExtInitializer(void** extDataToSet, FREContextInitialize
     *ctxInitializerToSet = &ContextInitializer;
     *ctxFinalizerToSet = &ContextFinalizer;
     
-    adapterDictionary = [[NSMutableDictionary alloc] init];
-    
     NSLog(@"Exiting ExtInitializer()");
 }
 
@@ -236,9 +230,6 @@ void UDPSocketiOSLibraryExtInitializer(void** extDataToSet, FREContextInitialize
 void UDPSocketiOSLibraryExtFinalizer(void* extData) {
     
     NSLog(@"Entering ExtFinalizer()");
-    
-    adapterDictionary = nil;
-    
     NSLog(@"Exiting ExtFinalizer()");
     return;
 }

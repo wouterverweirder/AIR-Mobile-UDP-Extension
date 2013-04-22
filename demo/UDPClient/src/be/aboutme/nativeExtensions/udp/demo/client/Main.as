@@ -9,6 +9,7 @@ package be.aboutme.nativeExtensions.udp.demo.client
 	import feathers.themes.MetalWorksMobileTheme;
 	
 	import flash.events.DatagramSocketDataEvent;
+	import flash.system.System;
 	import flash.utils.ByteArray;
 	
 	import starling.display.Sprite;
@@ -36,6 +37,8 @@ package be.aboutme.nativeExtensions.udp.demo.client
 		private var portInput:TextInput;
 		
 		private var sendButton:Button;
+		
+		private var numSends:uint = 0;
 
 		public function Main()
 		{
@@ -105,6 +108,14 @@ package be.aboutme.nativeExtensions.udp.demo.client
 			bytes.writeUTFBytes(messageInput.text + "\n");
 			messageInput.text = defaultTextMessage;
 			udpSocket.send(bytes, ipInput.text, int(portInput.text));
+			if(++numSends > 3)
+			{
+				trace("clean udpsocket");
+				udpSocket.removeEventListener(DatagramSocketDataEvent.DATA, udpDataHandler);
+				udpSocket.removeEventListener("close", udpCloseHandler);
+				udpSocket = null;
+				System.gc();
+			}
 		}
 		
 		protected function udpDataHandler(event:DatagramSocketDataEvent):void
