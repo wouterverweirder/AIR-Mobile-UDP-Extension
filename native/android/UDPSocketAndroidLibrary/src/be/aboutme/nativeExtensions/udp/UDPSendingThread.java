@@ -16,8 +16,6 @@ public class UDPSendingThread implements Runnable {
 		this.ctx = ctx;
 		this.socket = socket;
 		
-		ctx.getAdapter().log("UDPSendingThread Constructor");
-		
 		running = true;
 	}
 
@@ -30,7 +28,7 @@ public class UDPSendingThread implements Runnable {
 				try {
 					socket.send(packet);
 				} catch (IOException e) {
-					adapter.log(e);
+					running = false;
 				}
 				packet = adapter.readPacketToSend();
 			}

@@ -36,13 +36,9 @@ public class Send implements FREFunction {
 				success = adapter.send(bytes, ip, port);
 				
 			} catch (IllegalStateException e) {
-				adapter.log(e);
 			} catch (FRETypeMismatchException e) {
-				adapter.log(e);
 			} catch (FREInvalidObjectException e) {
-				adapter.log(e);
 			} catch (FREWrongThreadException e) {
-				adapter.log(e);
 			}
 		}
 		
@@ -50,7 +46,6 @@ public class Send implements FREFunction {
 		try {
 			result = FREObject.newObject(success);
 		} catch (FREWrongThreadException e) {
-			adapter.log(e);
 		}
 		
 		return result;

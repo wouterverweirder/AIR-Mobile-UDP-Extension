@@ -23,20 +23,15 @@ public class Bind implements FREFunction {
 			if(address.equals("0.0.0.0")) success = adapter.bind(port);
 			else success = adapter.bind(port, address);
 		} catch (IllegalStateException e) {
-			adapter.log(e);
 		} catch (FRETypeMismatchException e) {
-			adapter.log(e);
 		} catch (FREInvalidObjectException e) {
-			adapter.log(e);
 		} catch (FREWrongThreadException e) {
-			adapter.log(e);
 		}
 		
 		FREObject result = null;
 		try {
 			result = FREObject.newObject(success);
 		} catch (FREWrongThreadException e) {
-			adapter.log(e);
 		}
 		
 		return result;

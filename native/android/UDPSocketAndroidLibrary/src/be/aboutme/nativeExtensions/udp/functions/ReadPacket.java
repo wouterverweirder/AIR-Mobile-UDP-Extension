@@ -22,11 +22,9 @@ public class ReadPacket implements FREFunction {
 	public FREObject call(FREContext context, FREObject[] args) {
 		
 		UDPSocketAdapter adapter = ((UDPSocketContext) context).getAdapter();
-		adapter.log("ReadPacket called");
 		
 		FREObject result  = null;
 		DatagramPacket packet = adapter.readReceivedPacket();
-		adapter.log("packet: " + packet);
 		if(packet != null) {			
 			try {
 				
@@ -50,19 +48,12 @@ public class ReadPacket implements FREFunction {
 				result.setProperty("dstPort", FREObject.newObject(adapter.getPort()));
 				
 			} catch (IllegalStateException e) {
-				adapter.log(e);
 			} catch (FRETypeMismatchException e) {
-				adapter.log(e);
 			} catch (FREInvalidObjectException e) {
-				adapter.log(e);
 			} catch (FREASErrorException e) {
-				adapter.log(e);
 			} catch (FRENoSuchNameException e) {
-				adapter.log(e);
 			} catch (FREWrongThreadException e) {
-				adapter.log(e);
 			} catch (FREReadOnlyException e) {
-				adapter.log(e);
 			}
 		}
 		

@@ -17,23 +17,14 @@ public class UDPListeningThread implements Runnable {
 		this.ctx = ctx;
 		this.socket = socket;
 		
-		ctx.getAdapter().log("UDPListeningThread Constructor");
-		
 		listening = true;
 	}
 
 	public void run() {
-		
-		UDPSocketAdapter adapter = ctx.getAdapter();
-		
-		adapter.log("run method");
-		
 		try {
 			socket.setSoTimeout(1000);
-			adapter.log("set timeout");
 		} catch (SocketException e) {
 			listening = false;
-			adapter.log(e);
 		}
 			
 		byte[] packetContent;
@@ -51,7 +42,6 @@ public class UDPListeningThread implements Runnable {
 				//timeout, just continue
 			} catch(IOException e) {
 				listening = false;
-				adapter.log(e);
 			}
 		}
 	}

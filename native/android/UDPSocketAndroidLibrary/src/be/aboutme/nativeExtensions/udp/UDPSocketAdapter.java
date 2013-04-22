@@ -26,6 +26,8 @@ public class UDPSocketAdapter {
 	private DatagramChannel channel;
 	private DatagramSocket socket;
 	
+	private Boolean hasDispatchedClose;
+	
 	private UDPListeningThread udpListeningThread;
 	private Thread listenThread;
 	
@@ -41,9 +43,7 @@ public class UDPSocketAdapter {
 			channel = DatagramChannel.open();
 			socket = channel.socket();
 		} catch (SocketException e) {
-			log(e);
 		} catch (IOException e) {
-			log(e);
 		}
 		theReceiveQueue = new LinkedBlockingQueue<DatagramPacket>();
 		theSendQueue = new LinkedBlockingQueue<DatagramPacket>();
@@ -92,14 +92,12 @@ public class UDPSocketAdapter {
 	}
 	
 	public boolean bind(int port, String host) {
-		log("bind on " + host + ":" + port);
 		try {
 			SocketAddress addr = new InetSocketAddress(host, port);
 			socket.bind(addr);
 			port = socket.getLocalPort();
 			address = socket.getLocalAddress().getHostAddress();
 		} catch (SocketException e) {
-			log(e);
 			return false;
 		}
 		return true;
@@ -110,6 +108,13 @@ public class UDPSocketAdapter {
 		stopSendingThread();
 		socket.close();
 		return true;
+	}
+	
+	public void dispatchClose() {
+		if(!hasDispatchedClose) {
+			hasDispatchedClose = true;
+			context.dispatchStatusEventAsync("close", "");
+		}
 	}
 	
 	public String getAddress() {
@@ -143,7 +148,6 @@ public class UDPSocketAdapter {
 			theSendQueue.add(packet);
 			return true;
 		} catch (UnknownHostException e) {
-			log(e);
 		}
 		return false;
 	}
@@ -160,13 +164,16 @@ public class UDPSocketAdapter {
 		context.dispatchStatusEventAsync("receive", "");
 	}
 	
+	/*
 	public void log(Exception e) {
 		context.dispatchStatusEventAsync("error", e.getMessage());
 	}
 	
 	public void log(String message) {
 		context.dispatchStatusEventAsync("log", message);
+		System.out.println(message);
 	}
+	*/
 	
 	public String getLocalIpAddress() {
 		ConnectivityManager conMan = (ConnectivityManager) context.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);

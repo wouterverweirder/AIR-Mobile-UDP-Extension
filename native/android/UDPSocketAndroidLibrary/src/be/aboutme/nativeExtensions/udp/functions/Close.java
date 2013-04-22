@@ -20,7 +20,6 @@ public class Close implements FREFunction {
 		try {
 			result = FREObject.newObject(success);
 		} catch (FREWrongThreadException e) {
-			adapter.log(e);
 		}
 		
 		return result;
