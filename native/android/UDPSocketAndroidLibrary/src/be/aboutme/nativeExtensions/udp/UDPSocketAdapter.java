@@ -16,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.text.format.Formatter;
 
 public class UDPSocketAdapter {
@@ -31,14 +32,11 @@ public class UDPSocketAdapter {
 	private UDPListeningThread udpListeningThread;
 	private Thread listenThread;
 	
-	private UDPSendingThread udpSendingThread;
-	private Thread sendingThread;
-	
 	private LinkedBlockingQueue<DatagramPacket>theReceiveQueue;
-	private LinkedBlockingQueue<DatagramPacket>theSendQueue;
 	
 	public UDPSocketAdapter(UDPSocketContext context) {
 		this.context = context;
+		
 		try {
 			channel = DatagramChannel.open();
 			socket = channel.socket();
@@ -46,24 +44,6 @@ public class UDPSocketAdapter {
 		} catch (IOException e) {
 		}
 		theReceiveQueue = new LinkedBlockingQueue<DatagramPacket>();
-		theSendQueue = new LinkedBlockingQueue<DatagramPacket>();
-	}
-	
-	private void startSendingThread() {
-		if(sendingThread == null) {
-			udpSendingThread = new UDPSendingThread(context, socket);
-			sendingThread = new Thread(udpSendingThread);
-			sendingThread.start();
-		}
-	}
-	
-	private void stopSendingThread() {
-		if(sendingThread != null) {
-			udpSendingThread.stop();
-			Thread t = sendingThread;
-			sendingThread = null;
-			t.interrupt();
-		}
 	}
 	
 	private void startListeningThread() {
@@ -105,7 +85,6 @@ public class UDPSocketAdapter {
 	
 	public boolean close() {
 		stopListeningThread();
-		stopSendingThread();
 		socket.close();
 		return true;
 	}
@@ -129,23 +108,16 @@ public class UDPSocketAdapter {
 		return theReceiveQueue.poll();
 	}
 	
-	public DatagramPacket readPacketToSend() {
-		return theSendQueue.poll();
-	}
-	
 	public boolean receive() {
 		startListeningThread();
 		return true;
 	}
 	
 	public boolean send(byte[] data, String ip, int port) {
-		if(sendingThread == null) {
-			startSendingThread();
-		}
 		try {
 			InetAddress address = InetAddress.getByName(ip);
 			DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
-			theSendQueue.add(packet);
+			new SendUDPTask().execute(packet);
 			return true;
 		} catch (UnknownHostException e) {
 		}
@@ -164,17 +136,6 @@ public class UDPSocketAdapter {
 		context.dispatchStatusEventAsync("receive", "");
 	}
 	
-	/*
-	public void log(Exception e) {
-		context.dispatchStatusEventAsync("error", e.getMessage());
-	}
-	
-	public void log(String message) {
-		context.dispatchStatusEventAsync("log", message);
-		System.out.println(message);
-	}
-	*/
-	
 	public String getLocalIpAddress() {
 		ConnectivityManager conMan = (ConnectivityManager) context.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -184,5 +145,18 @@ public class UDPSocketAdapter {
 			return Formatter.formatIpAddress(wifiInfo.getIpAddress());
 		}
 		return null;
+	}
+	
+	private class SendUDPTask extends AsyncTask<DatagramPacket, Integer, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(DatagramPacket... params) {
+			try {
+				socket.send(params[0]);
+			} catch (IOException e) {
+			}
+			return true;
+		}
+		
 	}
 }
