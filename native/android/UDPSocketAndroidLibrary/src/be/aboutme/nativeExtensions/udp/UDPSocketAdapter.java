@@ -27,18 +27,19 @@ public class UDPSocketAdapter {
 	private DatagramChannel channel;
 	private DatagramSocket socket;
 	
-	private Boolean hasDispatchedClose;
-	
 	private UDPListeningThread udpListeningThread;
 	private Thread listenThread;
 	
 	private LinkedBlockingQueue<DatagramPacket>theReceiveQueue;
+	private boolean hasSentClose;
 	
 	public UDPSocketAdapter(UDPSocketContext context) {
 		this.context = context;
+		this.hasSentClose = false;
 		
 		try {
 			channel = DatagramChannel.open();
+			channel.configureBlocking(true);
 			socket = channel.socket();
 		} catch (SocketException e) {
 		} catch (IOException e) {
@@ -48,7 +49,7 @@ public class UDPSocketAdapter {
 	
 	private void startListeningThread() {
 		if(listenThread == null) {
-			udpListeningThread = new UDPListeningThread(context, socket);
+			udpListeningThread = new UDPListeningThread(context, channel);
 			listenThread = new Thread(udpListeningThread);
 			listenThread.start();
 		}
@@ -85,13 +86,16 @@ public class UDPSocketAdapter {
 	
 	public boolean close() {
 		stopListeningThread();
-		socket.close();
+		try {
+			channel.close();
+		} catch (IOException e) {
+		}
 		return true;
 	}
 	
-	public void dispatchClose() {
-		if(!hasDispatchedClose) {
-			hasDispatchedClose = true;
+	public void sendCloseIfNeeded() {
+		if(!hasSentClose) {
+			hasSentClose = true;
 			context.dispatchStatusEventAsync("close", "");
 		}
 	}
@@ -154,8 +158,16 @@ public class UDPSocketAdapter {
 			try {
 				socket.send(params[0]);
 			} catch (IOException e) {
+				return false;
 			}
 			return true;
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean result) {
+			if(!result) {
+				sendCloseIfNeeded();
+			}
 		}
 		
 	}
