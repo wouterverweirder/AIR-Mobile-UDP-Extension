@@ -1,5 +1,7 @@
 #AIR Mobile UDP extension
 
+**NOTICE: AS OF AIR 3.8, DATAGRAMSOCKETS ARE INCLUDED IN THE RUNTIME. THIS EXTENSION IS A SOLUTION FOR LEGACY AIR RUNTIMES.**
+
 The UDPSocket class enables code to send and receive
 Universal Datagram Packets (UDP) on AIR for iOS & Android projects.
 
